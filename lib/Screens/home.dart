@@ -19,6 +19,7 @@ class _HomeState extends State<Home> {
   final Color ternaryColor = const Color(0xff3a5a40);
   var index = 0;
   bool isBottomNavBarVisible = true;
+  bool resize = false;
 
   _screenChange() {
     if (index == 0) {
@@ -28,7 +29,7 @@ class _HomeState extends State<Home> {
     } else if (index == 3) {
       return QrScanner();
     } else if (index == 4) {
-      return const ChatBot();
+      return ChatBot();
     }
   }
 
@@ -42,6 +43,10 @@ class _HomeState extends State<Home> {
   void _toggleBottomNavBar() {
     setState(() {
       isBottomNavBarVisible = !isBottomNavBarVisible;
+      resize = !resize;
+      ChatBot(
+        resizableWidget: resize,
+      );
     });
   }
 
@@ -103,49 +108,49 @@ class _HomeState extends State<Home> {
           : null,
       body: _screenChange(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
+      floatingActionButton: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          index == 0
-              ? FloatingActionButton(
-                  elevation: 20,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddRecords(),
-                      ),
-                    );
-                  },
-                  backgroundColor: primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
+          if (index == 0)
+            FloatingActionButton(
+              elevation: 20,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddRecords(),
                   ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                )
-              : const SizedBox(),
-          const SizedBox(height: 10),
-          index == 4
-              ? FloatingActionButton(
-                  elevation: 20,
-                  onPressed: _toggleBottomNavBar,
-                  backgroundColor: primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Icon(
-                    isBottomNavBarVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: Colors.white,
-                  ),
-                )
-              : const SizedBox(
-                  height: 00,
+                );
+              },
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          if (index == 4)
+            Positioned(
+              right: 10,
+              bottom:
+                  90, // Adjust the position to not overlap with the first FAB
+              child: FloatingActionButton(
+                elevation: 20,
+                onPressed: _toggleBottomNavBar,
+                backgroundColor: primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
                 ),
+                child: Icon(
+                  isBottomNavBarVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  color: Colors.white,
+                ),
+              ),
+            ),
         ],
       ),
     );
